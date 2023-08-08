@@ -1859,7 +1859,7 @@
 
 "@tensorflow-models/coco-ssd@^2.2.2":
   version "2.2.2"
-  resolved "https://registry.npmjs.org/@tensorflow-models/coco-ssd/-/coco-ssd-2.2.2.tgz"
+  resolved "https://registry.yarnpkg.com/@tensorflow-models/coco-ssd/-/coco-ssd-2.2.2.tgz#2a308b3b11a106bf640c5245b980c79df8208b60"
   integrity sha512-Jey2JscmKEValcFZH2ZLz14s8KPRmVtfJ0d0M3dPhvBp9dJiGNanVXr/pJAY5OS7emKj9uSciGhdkHWXY9Hovw==
 
 "@tensorflow/tfjs-backend-cpu@4.8.0":

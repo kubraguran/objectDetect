@@ -5,6 +5,7 @@ import * as cocossd from "@tensorflow-models/coco-ssd";
 import Webcam from "react-webcam";
 import { drawRect } from "./utilities";
 
+
 function Live() {
   const webcamRef = useRef(null);
   const canvasRef = useRef(null);
@@ -21,7 +22,7 @@ function Live() {
     }, 10);
   };
 
- 
+
 
   const detect = async (net) => {
     if (

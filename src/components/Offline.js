@@ -1,106 +1,140 @@
-import React, { useRef, useState, useEffect } from "react";
-import * as tf from "@tensorflow/tfjs";
+import React, { useRef, useState } from "react";
 import * as cocossd from "@tensorflow-models/coco-ssd";
 import { drawRect } from "./utilities";
 
 function Offline() {
-  const imageRef = useRef(null);
   const canvasRef = useRef(null);
-  const [noProtection, setNoProtection] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [personCount, setPersonCount] = useState(0);
 
-  const runCoco = async (image) => {
+  const detectImage = async (imageElement) => {
     const net = await cocossd.load();
-    console.log("Handpose model loaded.");
-
-    const obj = await net.detect(image);
+    const obj = await net.detect(imageElement);
 
     const safetyItems = ["helmet", "vest", "gloves", "person"];
-
     const relevantObjects = obj.filter((item) =>
       safetyItems.includes(item.class)
     );
 
-    const persons = relevantObjects.filter((item) => item.class === "person");
-    const personCount = persons.length;
+    const personObjects = relevantObjects.filter((item) => item.class === "person");
+    setPersonCount(personObjects.length);
 
     const ctx = canvasRef.current.getContext("2d");
-    drawRect(relevantObjects, ctx);
-
-    ctx.font = "24px Arial";
-    ctx.fillStyle = "red";
-    ctx.fillText(`Person Count: ${personCount}`, 10, 30);
-
-    if (relevantObjects.length === 0) {
-      setNoProtection(true);
-      ctx.fillStyle = "yellow";
-      ctx.fillText("Wear Protect", 10, 60);
-    } else {
-      setNoProtection(false);
-    }
+    const scale = 700 / Math.max(imageElement.width, imageElement.height);
+    drawRect(relevantObjects, ctx, scale);
   };
 
-  const handleImageUpload = (e) => {
-    const file = e.target.files[0];
-    const reader = new FileReader();
+  function handleImageUpload(event) {
+    const imageFile = event.target.files[0];
 
-    reader.onloadend = () => {
-      const image = new Image();
-      image.src = reader.result;
-
-      image.onload = () => {
-        const canvas = canvasRef.current;
-        const ctx = canvas.getContext("2d");
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
-        runCoco(image);
-      };
+    const imageElement = new Image();
+    imageElement.onload = () => {
+      setSelectedImage(imageElement);
+      setPersonCount(0); 
+      detectImage(imageElement);
     };
+    imageElement.src = URL.createObjectURL(imageFile);
+  }
 
-    if (file) {
-      reader.readAsDataURL(file);
-    }
-  };
+  function handleButtonClick() {
+  
+    inputRef.current.click();
+  }
+
+  const inputRef = useRef(null);
 
   return (
-    <div className="App">
-      <header className="App-header">
-        <input type="file" onChange={handleImageUpload} accept="image/*" />
-        <canvas
-          ref={canvasRef}
-          style={{
-            position: "absolute",
-            marginLeft: "auto",
-            marginRight: "auto",
-            left: 0,
-            right: 0,
-            textAlign: "center",
-            zIndex: 8,
-            width: 640,
-            height: 480,
-          }}
-        />
-        {noProtection && (
-          <div
-            style={{
-              position: "absolute",
-              marginLeft: "auto",
-              marginRight: "auto",
-              left: 0,
-              right: 0,
-              textAlign: "center",
-              zIndex: 10,
-              top: "50%",
-              color: "yellow",
-              fontSize: "24px",
-              fontWeight: "bold",
-            }}
-          >
-            Wear Protect
+    <div style={styles.container}>
+      <h2 style={styles.heading}>Please wait for a couple minutes after upload photo</h2>
+      {selectedImage ? (
+        <div style={styles.imageContainer}>
+          <img
+            src={selectedImage.src}
+            alt="Uploaded"
+            style={styles.image}
+          />
+          <canvas
+            ref={canvasRef}
+            style={styles.canvas}
+          />
+          <div style={styles.personCount}>
+            Person Count: {personCount}
           </div>
-        )}
-      </header>
+        </div>
+      ) : (
+        <div style={styles.buttonContainer}>
+          <button onClick={handleButtonClick} style={styles.button}>
+            Upload Image
+          </button>
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleImageUpload}
+            ref={inputRef}
+            style={{ display: "none" }}
+          />
+        </div>
+      )}
     </div>
   );
 }
+
+const styles = {
+  container: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    padding: "20px",
+  },
+  heading: {
+    marginBottom: "20px",
+  },
+  imageContainer: {
+    position: "relative",
+    width: "700px",
+    height: "700px",
+  },
+  image: {
+    width: "100%",
+    height: "100%",
+    display: "block",
+  },
+  canvas: {
+    position: "absolute",
+    left: 0,
+    top: 0,
+    zIndex: 8,
+    width: "700px",
+    height: "700px",
+  },
+  personCount: {
+    position: "absolute",
+    left: 0,
+    top: 0,
+    zIndex: 9,
+    width: "700px",
+    height: "700px",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    color: "red",
+    fontSize: "24px",
+  },
+  buttonContainer: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+  },
+  button: {
+    margin: "10px",
+    padding: "8px 12px",
+    color: "white",
+    border: "none",
+    borderRadius: "4px",
+    cursor: "pointer",
+    fontSize: "16px",
+    background: "#4CAF50",
+  },
+};
 
 export default Offline;
