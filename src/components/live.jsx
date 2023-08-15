@@ -5,24 +5,19 @@ import * as cocossd from "@tensorflow-models/coco-ssd";
 import Webcam from "react-webcam";
 import { drawRect } from "./utilities";
 
-
 function Live() {
   const webcamRef = useRef(null);
   const canvasRef = useRef(null);
   const [noProtection, setNoProtection] = useState(false);
 
-
-
   const runCoco = async () => {
     const net = await cocossd.load();
     console.log("Handpose model loaded.");
-  
+
     setInterval(() => {
       detect(net);
     }, 10);
   };
-
-
 
   const detect = async (net) => {
     if (
@@ -68,16 +63,16 @@ function Live() {
     }
   };
 
-
-
-  useEffect(()=>{runCoco()},[]);
+  useEffect(() => {
+    runCoco();
+  }, []);
 
   return (
     <div className="App">
       <header className="App-header">
         <Webcam
           ref={webcamRef}
-          muted={true} 
+          muted={true}
           style={{
             position: "absolute",
             marginLeft: "auto",
@@ -105,7 +100,7 @@ function Live() {
             height: 480,
           }}
         />
-          {noProtection && (
+        {noProtection && (
           <div
             style={{
               position: "absolute",
