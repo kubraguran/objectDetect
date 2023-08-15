@@ -5,14 +5,12 @@ function ToggleButton(props) {
 
   return (
     <label className="flex items-center cursor-pointer">
-      {/* The actual input checkbox */}
       <input
         type="checkbox"
         className="hidden"
         checked={isToggled}
         onChange={() => setIsToggled(!isToggled)}
       />
-      {/* The toggle switch UI */}
       <div className="relative">
         <div
           className={`block w-10 h-6 rounded-full ${
