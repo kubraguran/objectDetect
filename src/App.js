@@ -10,7 +10,7 @@ import "./App.css";
 function App() {
   return (
     <Router>
-      <div className="flex w-full mt-10 content-center mx-auto space-x-4 overflow-hidden overflow-x-scroll scrollbar-hide 2xl:justify-center">
+      <div className="flex w-full my-10 content-center mx-auto space-x-4 overflow-hidden overflow-x-scroll scrollbar-hide 2xl:justify-center">
         <div className="flex flex-nowrap flex-row shrink-0">
           <div className="flex flex-col shrink-0">
             <Menu />
