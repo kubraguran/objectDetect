@@ -70,55 +70,56 @@ function Live() {
   return (
     <div className="App">
       <header className="App-header">
-        <Webcam
-          ref={webcamRef}
-          muted={true}
+        <div
           style={{
-            position: "absolute",
-            marginLeft: "auto",
-            marginRight: "auto",
-            left: 0,
-            right: 0,
-            textAlign: "center",
-            zindex: 9,
-            width: 640,
-            height: 480,
+            position: "relative",
+            height: "100%",
+            width: "640px",
+            margin: "0 auto",
           }}
-        />
-
-        <canvas
-          ref={canvasRef}
-          style={{
-            position: "absolute",
-            marginLeft: "auto",
-            marginRight: "auto",
-            left: 0,
-            right: 0,
-            textAlign: "center",
-            zindex: 8,
-            width: 640,
-            height: 480,
-          }}
-        />
-        {noProtection && (
-          <div
+        >
+          <Webcam
+            ref={webcamRef}
+            muted={true}
             style={{
               position: "absolute",
-              marginLeft: "auto",
-              marginRight: "auto",
-              left: 0,
-              right: 0,
-              textAlign: "center",
-              zIndex: 10,
-              top: "50%",
-              color: "yellow",
-              fontSize: "24px",
-              fontWeight: "bold",
+              left: "50%",
+              transform: "translateX(-50%)",
+              zindex: 9,
+              width: 640,
+              height: 480,
             }}
-          >
-            Wear Protect
-          </div>
-        )}
+          />
+
+          <canvas
+            ref={canvasRef}
+            style={{
+              position: "absolute",
+              left: "50%",
+              transform: "translateX(-50%)",
+              zindex: 8,
+              width: 640,
+              height: 480,
+            }}
+          />
+
+          {noProtection && (
+            <div
+              style={{
+                position: "absolute",
+                left: "50%",
+                top: "50%",
+                transform: "translate(-50%, -50%)",
+                zindex: 10,
+                color: "yellow",
+                fontSize: "24px",
+                fontWeight: "bold",
+              }}
+            >
+              Wear Protect
+            </div>
+          )}
+        </div>
       </header>
     </div>
   );
