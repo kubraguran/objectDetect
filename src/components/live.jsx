@@ -70,7 +70,14 @@ function Live() {
   return (
     <div className="App">
       <header className="App-header">
-        <div style={{ position: "relative", width: "640px", margin: "0 auto" }}>
+        <div
+          style={{
+            position: "relative",
+            height: "100%",
+            width: "640px",
+            margin: "0 auto",
+          }}
+        >
           <Webcam
             ref={webcamRef}
             muted={true}

@@ -16,7 +16,7 @@ function App() {
             <Menu />
             <Options />
           </div>
-          <div>
+          <div className="bg-gray-900 text-white w-640 h-480">
             <Routes>
               <Route path="/live" element={<Live />} />
               <Route path="/offline" element={<Offline />} />
