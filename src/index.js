@@ -7,7 +7,7 @@ import "./index.css";
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <App className="flex" />
   </React.StrictMode>,
   document.getElementById("root")
 );

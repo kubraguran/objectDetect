@@ -4,24 +4,26 @@ import Offline from "./components/offline";
 import Live from "./components/live";
 import Menu from "./components/menu";
 import Options from "./components/options";
-import "./App.css";
 import Information from "./components/information";
+import "./App.css";
 
 function App() {
   return (
     <Router>
-      <div className="flex flex-row">
-        <div className="flex flex-col">
-          <Menu />
-          <Options />
+      <div className="flex w-full mt-10 content-center mx-auto space-x-4 overflow-hidden overflow-x-scroll scrollbar-hide 2xl:justify-center">
+        <div className="flex flex-nowrap flex-row shrink-0">
+          <div className="flex flex-col shrink-0">
+            <Menu />
+            <Options />
+          </div>
+          <div>
+            <Routes>
+              <Route path="/live" element={<Live />} />
+              <Route path="/offline" element={<Offline />} />
+            </Routes>
+          </div>
+          <Information />
         </div>
-        <div>
-          <Routes>
-            <Route path="/live" element={<Live />} />
-            <Route path="/offline" element={<Offline />} />
-          </Routes>
-        </div>
-        <Information />
       </div>
     </Router>
   );
