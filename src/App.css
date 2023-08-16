@@ -26,6 +26,15 @@
   color: #61dafb;
 }
 
+.scrollbar-hide::-webkit-scrollbar {
+  display: none; /* for Chrome, Safari */
+}
+
+.scrollbar-hide {
+  scrollbar-width: none; /* for Firefox */
+  -ms-overflow-style: none; /* for Internet Explorer and Edge */
+}
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);
