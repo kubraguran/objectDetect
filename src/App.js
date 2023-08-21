@@ -1,11 +1,11 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Offline from "./components/offline";
-import Live from "./components/live";
-import Menu from "./components/menu";
-import Options from "./components/options";
+import Offline from "./components/Offline";
+import Live from "./components/Live";
+import Menu from "./components/Menu";
+import Options from "./components/Options";
 import "./App.css";
-import Information from "./components/information";
+import Information from "./components/Information";
 
 function App() {
   return (
