@@ -53,14 +53,42 @@ function Live() {
       ctx.fillStyle = "red";
       ctx.fillText(`Person Count: ${personCount}`, 10, 30);
 
-      if (relevantObjects.length === 0) {
-        setNoProtection(true);
+      let noProtection = true; // Assume no protection initially
+
+      // Check if there's at least one person with helmet and gloves
+      for (const person of persons) {
+        const hasHelmet = relevantObjects.some(
+          (item) =>
+            item.class === "helmet" &&
+            isBoundingBoxOverlap(person.bbox, item.bbox)
+        );
+
+        const hasGloves = relevantObjects.some(
+          (item) =>
+            item.class === "gloves" &&
+            isBoundingBoxOverlap(person.bbox, item.bbox)
+        );
+
+        if (hasHelmet && hasGloves) {
+          noProtection = false;
+          break; // Exit the loop if a person with both helmet and gloves is found
+        }
+      }
+
+      if (noProtection) {
         ctx.fillStyle = "yellow";
-        ctx.fillText("Wear Protect", 10, 60);
-      } else {
-        setNoProtection(false);
+        ctx.fillText("Wear Protection!", 10, 60);
       }
     }
+  };
+
+  const isBoundingBoxOverlap = (bbox1, bbox2) => {
+    return (
+      bbox1[0] < bbox2[0] + bbox2[2] &&
+      bbox1[0] + bbox1[2] > bbox2[0] &&
+      bbox1[1] < bbox2[1] + bbox2[3] &&
+      bbox1[1] + bbox1[3] > bbox2[1]
+    );
   };
 
   useEffect(() => {
