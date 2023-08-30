@@ -2,7 +2,7 @@ import React, { useRef, useState } from "react";
 import * as cocossd from "@tensorflow-models/coco-ssd";
 import { drawRect } from "./utilities";
 
-function Offline() {
+function Offline({ toggleStates }) {
   const canvasRef = useRef(null);
   const [selectedImage, setSelectedImage] = useState(null);
   const [personCount, setPersonCount] = useState(0);
@@ -16,7 +16,9 @@ function Offline() {
       safetyItems.includes(item.class)
     );
 
-    const personObjects = relevantObjects.filter((item) => item.class === "person");
+    const personObjects = relevantObjects.filter(
+      (item) => item.class === "person"
+    );
     setPersonCount(personObjects.length);
 
     const ctx = canvasRef.current.getContext("2d");
@@ -30,14 +32,13 @@ function Offline() {
     const imageElement = new Image();
     imageElement.onload = () => {
       setSelectedImage(imageElement);
-      setPersonCount(0); 
+      setPersonCount(0);
       detectImage(imageElement);
     };
     imageElement.src = URL.createObjectURL(imageFile);
   }
 
   function handleButtonClick() {
-  
     inputRef.current.click();
   }
 
@@ -45,21 +46,14 @@ function Offline() {
 
   return (
     <div style={styles.container}>
-      <h2 style={styles.heading}>Please wait for a couple minutes after upload photo</h2>
+      <h2 style={styles.heading}>
+        Please wait for a couple minutes after upload photo
+      </h2>
       {selectedImage ? (
         <div style={styles.imageContainer}>
-          <img
-            src={selectedImage.src}
-            alt="Uploaded"
-            style={styles.image}
-          />
-          <canvas
-            ref={canvasRef}
-            style={styles.canvas}
-          />
-          <div style={styles.personCount}>
-            Person Count: {personCount}
-          </div>
+          <img src={selectedImage.src} alt="Uploaded" style={styles.image} />
+          <canvas ref={canvasRef} style={styles.canvas} />
+          <div style={styles.personCount}>Person Count: {personCount}</div>
         </div>
       ) : (
         <div style={styles.buttonContainer}>

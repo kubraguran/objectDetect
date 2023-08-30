@@ -1,15 +1,13 @@
 import React, { useState } from "react";
 
-function ToggleButton(props) {
-  const [isToggled, setIsToggled] = useState(false);
-
+function ToggleButton({ id, isToggled, handleToggle }) {
   return (
     <label className="flex items-center cursor-pointer">
       <input
         type="checkbox"
         className="hidden"
         checked={isToggled}
-        onChange={() => setIsToggled(!isToggled)}
+        onChange={() => handleToggle(id)}
       />
       <div className="relative">
         <div

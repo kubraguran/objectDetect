@@ -5,7 +5,7 @@ import * as cocossd from "@tensorflow-models/coco-ssd";
 import Webcam from "react-webcam";
 import { drawRect } from "./utilities";
 
-function Live() {
+function Live({ toggleStates }) {
   const webcamRef = useRef(null);
   const canvasRef = useRef(null);
   const [noProtection, setNoProtection] = useState(false);
@@ -20,6 +20,7 @@ function Live() {
   };
 
   const detect = async (net) => {
+    /* WebCam Control */
     if (
       typeof webcamRef.current !== "undefined" &&
       webcamRef.current !== null &&
@@ -35,23 +36,31 @@ function Live() {
       canvasRef.current.width = videoWidth;
       canvasRef.current.height = videoHeight;
 
+      /* Objects Detection */
+      // Get objects by coco-ssd
       const obj = await net.detect(video);
+      // console.log(obj);
 
       const safetyItems = ["helmet", "vest", "gloves", "person"];
 
+      // Include only safety items
       const relevantObjects = obj.filter((item) =>
         safetyItems.includes(item.class)
       );
 
+      // Get persons
       const persons = relevantObjects.filter((item) => item.class === "person");
       const personCount = persons.length;
 
+      // Draw Rectangle on canvas
       const ctx = canvasRef.current.getContext("2d");
       drawRect(relevantObjects, ctx);
 
       ctx.font = "24px Arial";
       ctx.fillStyle = "red";
-      ctx.fillText(`Person Count: ${personCount}`, 10, 30);
+      if (toggleStates["pcBtn"]) {
+        ctx.fillText(`Person Count: ${personCount}`, 10, 30);
+      }
 
       let noProtection = true; // Assume no protection initially
 
