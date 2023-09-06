@@ -64,29 +64,31 @@ function Live({ toggleStates }) {
 
       let noProtection = true; // Assume no protection initially
 
-      // Check if there's at least one person with helmet and gloves
-      for (const person of persons) {
-        const hasHelmet = relevantObjects.some(
-          (item) =>
-            item.class === "helmet" &&
-            isBoundingBoxOverlap(person.bbox, item.bbox)
-        );
+      if (toggleStates["ppeBtn"]) {
+        // Check if there's at least one person with helmet and gloves
+        for (const person of persons) {
+          const hasHelmet = relevantObjects.some(
+            (item) =>
+              item.class === "helmet" &&
+              isBoundingBoxOverlap(person.bbox, item.bbox)
+          );
 
-        const hasGloves = relevantObjects.some(
-          (item) =>
-            item.class === "gloves" &&
-            isBoundingBoxOverlap(person.bbox, item.bbox)
-        );
+          const hasGloves = relevantObjects.some(
+            (item) =>
+              item.class === "gloves" &&
+              isBoundingBoxOverlap(person.bbox, item.bbox)
+          );
 
-        if (hasHelmet && hasGloves) {
-          noProtection = false;
-          break; // Exit the loop if a person with both helmet and gloves is found
+          if (hasHelmet && hasGloves) {
+            noProtection = false;
+            break; // Exit the loop if a person with both helmet and gloves is found
+          }
         }
-      }
 
-      if (noProtection) {
-        ctx.fillStyle = "yellow";
-        ctx.fillText("Wear Protection!", 10, 60);
+        if (noProtection) {
+          ctx.fillStyle = "yellow";
+          ctx.fillText("Wear Protection!", 10, 60);
+        }
       }
     }
   };
@@ -102,7 +104,7 @@ function Live({ toggleStates }) {
 
   useEffect(() => {
     runCoco();
-  }, []);
+  }, [toggleStates]);
 
   return (
     <div className="App">
