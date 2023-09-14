@@ -8,40 +8,126 @@ import { drawRect } from "./utilities";
 function Live({ toggleStates }) {
   const webcamRef = useRef(null);
   const canvasRef = useRef(null);
+  const net = useRef(null);
   const [noProtection, setNoProtection] = useState(false);
+  const safetyItems = ["helmet", "vest", "gloves", "person"];
 
-  const runCoco = async () => {
-    const net = await cocossd.load();
-    console.log("Handpose model loaded.");
+  // const detect = async (net) => {
+  //   if (
+  //     typeof webcamRef.current !== "undefined" &&
+  //     webcamRef.current !== null &&
+  //     webcamRef.current.video.readyState === 4
+  //   ) {
+  //     const videoWidth = webcamRef.current.video.videoWidth;
+  //     const videoHeight = webcamRef.current.video.videoHeight;
 
-    setInterval(() => {
-      detect(net);
-    }, 10);
-  };
+  //     canvasRef.current.width = videoWidth;
+  //     canvasRef.current.height = videoHeight;
 
-  const detect = async (net) => {
-    /* WebCam Control */
+  //     const video = webcamRef.current.video;
+  //     /* Objects Detection */
+  //     // **  TODO: Do seperate logic from drawing detection rect from here ** //
+  //     // Get objects by coco-ssd
+  //     const obj = await net.current.detect(video);
+  //     // console.log(obj);
+
+  //     // Include only safety items
+  //     const relevantObjects = obj.filter((item) =>
+  //       safetyItems.includes(item.class)
+  //     );
+
+  //     // Get persons
+  //     const persons = relevantObjects.filter((item) => item.class === "person");
+  //     const personCount = persons.length;
+
+  //     // Draw Rectangle on canvas
+  //     const ctx = canvasRef.current.getContext("2d");
+  //     drawRect(relevantObjects, ctx);
+
+  //     ctx.font = "24px Arial";
+  //     ctx.fillStyle = "red";
+
+  //     if (toggleStates["pcBtn"]) {
+  //       ctx.fillText(`Person Count: ${personCount}`, 10, 30);
+  //     }
+
+  //     let noProtection = true; // Assume no protection initially
+
+  //     if (toggleStates["ppeBtn"]) {
+  //       // Check if there's at least one person with helmet and gloves
+  //       for (const person of persons) {
+  //         const hasHelmet = relevantObjects.some(
+  //           (item) =>
+  //             item.class === "helmet" &&
+  //             isBoundingBoxOverlap(person.bbox, item.bbox)
+  //         );
+
+  //         const hasGloves = relevantObjects.some(
+  //           (item) =>
+  //             item.class === "gloves" &&
+  //             isBoundingBoxOverlap(person.bbox, item.bbox)
+  //         );
+
+  //         if (hasHelmet && hasGloves) {
+  //           noProtection = false;
+  //           break; // Exit the loop if a person with both helmet and gloves is found
+  //         }
+  //       }
+
+  //       if (noProtection) {
+  //         ctx.fillStyle = "yellow";
+  //         ctx.fillText("Wear Protection!", 10, 60);
+  //       }
+  //     }
+  //   }
+  // };
+
+  const virtualFence = async (net) => {};
+
+  const detectPPE = async (net) => {
     if (
       typeof webcamRef.current !== "undefined" &&
       webcamRef.current !== null &&
       webcamRef.current.video.readyState === 4
     ) {
-      const video = webcamRef.current.video;
       const videoWidth = webcamRef.current.video.videoWidth;
       const videoHeight = webcamRef.current.video.videoHeight;
-
-      webcamRef.current.video.width = videoWidth;
-      webcamRef.current.video.height = videoHeight;
 
       canvasRef.current.width = videoWidth;
       canvasRef.current.height = videoHeight;
 
+      const video = webcamRef.current.video;
       /* Objects Detection */
+      // **  TODO: Do seperate logic from drawing detection rect from here ** //
       // Get objects by coco-ssd
-      const obj = await net.detect(video);
+      const obj = await net.current.detect(video);
       // console.log(obj);
 
-      const safetyItems = ["helmet", "vest", "gloves", "person"];
+      // Include only safety items
+      const relevantObjects = obj.filter((item) =>
+        safetyItems.includes(item.class)
+      );
+    }
+  };
+
+  const faceRecognition = async (net) => {
+    if (
+      typeof webcamRef.current !== "undefined" &&
+      webcamRef.current !== null &&
+      webcamRef.current.video.readyState === 4
+    ) {
+      const videoWidth = webcamRef.current.video.videoWidth;
+      const videoHeight = webcamRef.current.video.videoHeight;
+
+      canvasRef.current.width = videoWidth;
+      canvasRef.current.height = videoHeight;
+
+      const video = webcamRef.current.video;
+      /* Objects Detection */
+      // **  TODO: Do seperate logic from drawing detection rect from here ** //
+      // Get objects by coco-ssd
+      const obj = await net.current.detect(video);
+      // console.log(obj);
 
       // Include only safety items
       const relevantObjects = obj.filter((item) =>
@@ -56,42 +142,51 @@ function Live({ toggleStates }) {
       const ctx = canvasRef.current.getContext("2d");
       drawRect(relevantObjects, ctx);
 
-      ctx.font = "24px Arial";
-      ctx.fillStyle = "red";
-      if (toggleStates["pcBtn"]) {
-        ctx.fillText(`Person Count: ${personCount}`, 10, 30);
-      }
-
-      let noProtection = true; // Assume no protection initially
-
-      if (toggleStates["ppeBtn"]) {
-        // Check if there's at least one person with helmet and gloves
-        for (const person of persons) {
-          const hasHelmet = relevantObjects.some(
-            (item) =>
-              item.class === "helmet" &&
-              isBoundingBoxOverlap(person.bbox, item.bbox)
-          );
-
-          const hasGloves = relevantObjects.some(
-            (item) =>
-              item.class === "gloves" &&
-              isBoundingBoxOverlap(person.bbox, item.bbox)
-          );
-
-          if (hasHelmet && hasGloves) {
-            noProtection = false;
-            break; // Exit the loop if a person with both helmet and gloves is found
-          }
-        }
-
-        if (noProtection) {
-          ctx.fillStyle = "yellow";
-          ctx.fillText("Wear Protection!", 10, 60);
-        }
-      }
+      // ctx.font = "24px Arial";
+      // ctx.fillStyle = "red";
     }
   };
+
+  const peopleCounting = async (net) => {
+    if (
+      typeof webcamRef.current !== "undefined" &&
+      webcamRef.current !== null &&
+      webcamRef.current.video.readyState === 4
+    ) {
+      const videoWidth = webcamRef.current.video.videoWidth;
+      const videoHeight = webcamRef.current.video.videoHeight;
+
+      canvasRef.current.width = videoWidth;
+      canvasRef.current.height = videoHeight;
+
+      const video = webcamRef.current.video;
+      /* Objects Detection */
+      // **  TODO: Do seperate logic from drawing detection rect from here ** //
+      // Get objects by coco-ssd
+      const obj = await net.current.detect(video);
+      // console.log(obj);
+
+      // Include only safety items
+      const relevantObjects = obj.filter((item) =>
+        safetyItems.includes(item.class)
+      );
+
+      // Get persons
+      const persons = relevantObjects.filter((item) => item.class === "person");
+      const personCount = persons.length;
+
+      const ctx = canvasRef.current.getContext("2d");
+
+      ctx.font = "24px Arial";
+      ctx.fillStyle = "red";
+
+      ctx.fillText(`Person Count: ${personCount}`, 10, 30);
+    }
+  };
+
+  const poseEstimation = async (net) => {};
+
+  const fallDetection = async (net) => {};
 
   const isBoundingBoxOverlap = (bbox1, bbox2) => {
     return (
@@ -102,9 +197,57 @@ function Live({ toggleStates }) {
     );
   };
 
+  // Load ML model
   useEffect(() => {
+    const runCoco = async () => {
+      net.current = await cocossd.load();
+      console.log("Model loaded. ");
+    };
+
     runCoco();
-  }, [toggleStates]);
+  }, []);
+
+  useEffect(() => {
+    let intervalId;
+
+    const runFaceRecognition = () => {
+      if (net.current) {
+        // Call your face recognition logic here using netRef.current
+        faceRecognition(net);
+      }
+    };
+
+    if (toggleStates["frBtn"]) {
+      intervalId = setInterval(runFaceRecognition, 10);
+    } else {
+      clearInterval(intervalId);
+    }
+
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, [toggleStates["frBtn"]]);
+
+  useEffect(() => {
+    let intervalId;
+
+    const runPeopleCounting = () => {
+      if (net.current) {
+        // Call your face recognition logic here using netRef.current
+        peopleCounting(net);
+      }
+    };
+
+    if (toggleStates["pcBtn"]) {
+      intervalId = setInterval(runPeopleCounting, 10);
+    } else {
+      clearInterval(intervalId);
+    }
+
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, [toggleStates["pcBtn"]]);
 
   return (
     <div className="App">
